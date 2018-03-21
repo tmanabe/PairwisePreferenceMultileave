@@ -7,6 +7,7 @@ import os.path
 import gc
 import math
 import cPickle
+from folddata import train_at, vali_at, test_at
 
 FOLDDATA_WRITE_VERSION = 3
 
@@ -298,14 +299,14 @@ class DataFold(object):
         if not train_read:
             doclists = []
             labels = []
-            _, n_doclists, n_labels, training_features = self._read_file(self.data_path
-                    + 'train.txt', filter_non_uniq=True)
+            _, n_doclists, n_labels, training_features = self._read_file(
+                    train_at(self.data_path), filter_non_uniq=True)
             doclists.extend(n_doclists)
             labels.extend(n_labels)
 
             if not validation_as_test:
-                _, n_doclists, n_labels, training_features = self._read_file(self.data_path
-                        + 'vali.txt', training_features, filter_non_uniq=True)
+                _, n_doclists, n_labels, training_features = self._read_file(
+                        vali_at(self.data_path), training_features, filter_non_uniq=True)
                 doclists.extend(n_doclists)
                 labels.extend(n_labels)
 
@@ -328,9 +329,9 @@ class DataFold(object):
 
         if not train_only and not test_read:
             if not validation_as_test:
-                _, test_doclists, test_labels, _ = self._read_file(self.data_path + 'test.txt')
+                _, test_doclists, test_labels, _ = self._read_file(test_at(self.data_path))
             else:
-                _, test_doclists, test_labels, _ = self._read_file(self.data_path + 'vali.txt')
+                _, test_doclists, test_labels, _ = self._read_file(vali_at(self.data_path))
 
             self.test_feature_matrix, self.test_doclist_ranges, self.test_label_vector = \
                 self._convert_featureDicts(test_doclists, test_labels, self.feature_map)

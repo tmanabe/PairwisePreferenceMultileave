@@ -3,6 +3,22 @@ import os.path, gc
 
 FOLDDATA_WRITE_VERSION=1
 
+def any_at(path, candidates):
+    for candidate in candidates:
+        result = path + candidate
+        if os.path.exists(result):
+            return result
+    raise('None of ' + ', '.join(candidates) + ' exists at ' + path)
+
+def train_at(path):
+    return any_at(path, ['train.txt', 'trainingset.txt'])
+
+def vali_at(path):
+    return any_at(path, ['vali.txt', 'validationset.txt'])
+
+def test_at(path):
+    return any_at(path, ['test.txt', 'testset.txt'])
+
 def read_file(path, all_features={}):
     '''
     Read letor file and returns dict for qid to indices, labels for queries
@@ -130,12 +146,12 @@ def get_fold_data(folder, validation_as_test=False, train_only=False, store_pick
     if not train_read:
         doclists = []
         labels   = []
-        _, n_doclists, n_labels, training_features = read_file(folder+"train.txt")
+        _, n_doclists, n_labels, training_features = read_file(train_at(folder))
         doclists.extend(n_doclists)
         labels.extend(  n_labels)
 
         if not validation_as_test:
-            _, n_doclists, n_labels, training_features = read_file(folder+"vali.txt",training_features)
+            _, n_doclists, n_labels, training_features = read_file(vali_at(folder),training_features)
             doclists.extend(n_doclists)
             labels.extend(  n_labels)
 
@@ -154,9 +170,9 @@ def get_fold_data(folder, validation_as_test=False, train_only=False, store_pick
     
     if not train_only and not test_read:
         if not validation_as_test:
-            _, test_doclists, test_labels, _ = read_file(folder+"test.txt")
+            _, test_doclists, test_labels, _ = read_file(test_at(folder))
         else:
-            _, test_doclists, test_labels, _ = read_file(folder+"vali.txt")
+            _, test_doclists, test_labels, _ = read_file(vali_at(folder))
 
         test_feature_matrix, test_doclist_ranges, test_label_vector = convert_featureDicts(test_doclists, test_labels,feature_map)
         del test_doclists,test_labels
