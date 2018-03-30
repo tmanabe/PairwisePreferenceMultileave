@@ -2,7 +2,6 @@
 
 import numpy as np
 import time
-import gurobipy
 
 class OptimizedMultileave(object):
 
@@ -38,6 +37,8 @@ class OptimizedMultileave(object):
         self._allowed_leavings = allowed_leavings.values()
 
     def make_multileaving(self, descending_rankings, inverted_rankings):
+        import gurobipy
+
         self.create_possible_lists(descending_rankings)
 
         # L x k x r
