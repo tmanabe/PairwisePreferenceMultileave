@@ -104,7 +104,7 @@ def get_simulation_report(simulation_arguments):
 
     if not simulation_arguments.log_folder is None \
         and os.path.isdir(simulation_arguments.log_folder):
-        output_path = simulation_arguments.log_folder + '/' + date_str.replace(' ', '-') + '.txt'
+        output_path = simulation_arguments.log_folder + '/' + date_str.replace(' ', '-').replace(':', '-') + '.txt'
         header = ['Starting simulation at %s.' % date_str, 'Log is also stored in output file at %s'
                    % output_path]
         return FileOutput(output_path, output_header=header, also_print=True, write_date=True)
