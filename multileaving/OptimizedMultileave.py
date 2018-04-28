@@ -5,9 +5,10 @@ import time
 
 class OptimizedMultileave(object):
 
-    def __init__(self, num_data_features, k=10):
+    def __init__(self, num_data_features, n_samples=10, k=10):
         self._name = 'Pairwise Preferences Multileave'
         self._k = k
+        self._n_samples = n_samples
         self.needs_inverted = True
         self.needs_descending = True
         self.needs_oracle = False
@@ -16,13 +17,13 @@ class OptimizedMultileave(object):
     def clean(self):
         pass
 
-    def create_possible_lists(self, descending_rankings, n_samples=10):
+    def create_possible_lists(self, descending_rankings):
         n_rankers = descending_rankings.shape[0]
         n_docs = descending_rankings.shape[1]
         top_docs = descending_rankings[:,:10]
         allowed_leavings = {}
         length = min(self._k, n_docs)
-        for _ in range(n_samples):
+        for _ in range(self._n_samples):
             available = np.ones((n_rankers, length), dtype=bool)
             sampled_list = np.empty(length, dtype=np.int32)
             assign = np.random.randint(0, n_rankers, self._k)

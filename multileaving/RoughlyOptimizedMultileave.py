@@ -7,6 +7,11 @@ import pulp
 import time
 
 
+class RoughlyOptimizedMock(RoughlyOptimized):
+    def __init__(self, lists, max_length=None):
+        self.max_length = max_length
+
+
 class RoughlyOptimizedMultileave(OptimizedMultileave):
 
     def __init__(self, num_data_features, k=10, bias_weight=1.0):
@@ -25,7 +30,7 @@ class RoughlyOptimizedMultileave(OptimizedMultileave):
                 C:        {list_id => {rank => {team_id => credit}}}
                 lists:    {list_id => {rank => doc_id}}
             Output:
-                xlists:    {team_id => {rank => doc_id}}
+                xlists:    {team_id => None} (Only its length is important)
                 xrankings: {list_id => xranking}
                     xranking: {rank => doc_id}
                     xranking.credits: {team_id => {doc_id => credit}}
@@ -35,14 +40,11 @@ class RoughlyOptimizedMultileave(OptimizedMultileave):
 
         lists = self._allowed_leavings
 
-        xlists = []
-        for ranking in rankings:
-            xlists.append(ranking.tolist())
+        xlists = [None] * len(rankings)
         xrankings = []
         assert len(C) == len(lists)
         for c, l in zip(C, lists):
-            xranking = XRanking()
-            xranking += l
+            xranking = XRanking(l)
             xcredits = {}
             for rank, doc_id in enumerate(l):
                 for team_id, credit in enumerate(c[rank]):
@@ -71,8 +73,8 @@ class RoughlyOptimizedMultileave(OptimizedMultileave):
         # --
 
         lists, rankings = self.convert_input(descending_rankings, C)
-        ro = RoughlyOptimized(lists, length, 10)
-        _, ps, _ = ro._compute_probabilities(lists, rankings)
+        rom = RoughlyOptimizedMock(lists, length)
+        _, ps, _ = rom._compute_probabilities(lists, rankings)
 
         # --
 

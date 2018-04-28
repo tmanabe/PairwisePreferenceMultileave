@@ -24,6 +24,9 @@ class MultileaveArgumentParser(SimulationArgumentParser):
         self.add_argument('--n_rankers', dest='n_rankers', required=True, type=int,
                           help='Number of rankers to use in simulation.')
 
+        self.add_argument('--combine_features', dest='combine_features', action='store_true',
+                          default=False, help='Combine features for using |features|^2 rankers.')
+
     # def get_multileave_args(self, args):
     #     return self.get_args(args, 'MultileaveArgumentParser')
 

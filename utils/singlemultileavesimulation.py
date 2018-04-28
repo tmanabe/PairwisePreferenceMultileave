@@ -36,6 +36,7 @@ class SingleMultileaveSimulation(object):
         self.rankers = []
         self.weights = None
         self.n_rankers = sim_args.n_rankers
+        self.combine_features = sim_args.combine_features
 
         self.run_index = 0
 
@@ -50,10 +51,18 @@ class SingleMultileaveSimulation(object):
         
         mul_feat = self.datafold.get_multileave_feat()
         n_mul_feat = len(mul_feat)
-        assert self.n_rankers <= len(mul_feat)
-        selection = mul_feat[np.random.permutation(n_mul_feat)[:self.n_rankers]]
         self.weights = np.zeros((self.n_rankers, self.feature_count))
-        self.weights[np.arange(self.n_rankers), selection] = 1.
+        if self.combine_features:
+            assert self.n_rankers <= n_mul_feat ** 2
+            for i, j in enumerate(np.random.permutation(n_mul_feat ** 2)[:self.n_rankers]):
+                k, l = divmod(j, n_mul_feat)
+                sel0, sel1 = mul_feat[k], mul_feat[l]
+                self.weights[i, sel0] += 1.
+                self.weights[i, sel1] += 1.
+        else:
+            assert self.n_rankers <= n_mul_feat
+            selection = mul_feat[np.random.permutation(n_mul_feat)[:self.n_rankers]]
+            self.weights[np.arange(self.n_rankers), selection] = 1.
         self.train_descending, self.train_inverted = rank_candidate_queries(self.weights,
                 self.datafold.train_feature_matrix, self.datafold.train_doclist_ranges,
                 inverted=multileave_method.needs_inverted)
