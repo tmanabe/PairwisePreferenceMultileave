@@ -56,7 +56,7 @@ def get_datasets(sim_args):
         yield DATASET_COLLECTION[data_tag]
 
 
-PREFIX = '/media/sdb1/letor'
+PREFIX = 'C:/letor'
 DATASET_COLLECTION = {}
 DATASET_COLLECTION['NP2003'] = DataSet('2003_np', PREFIX + '/Gov/Feature_min/2003_np_dataset/Fold*/',
                                        'bin', True, 64,
