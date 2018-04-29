@@ -8,8 +8,9 @@ import pulp
 
 class RoughlyOptimizedMultileave(OptimizedMultileave):
 
-    def __init__(self, num_data_features, k=10, bias_weight=1.0):
+    def __init__(self, num_data_features, n_samples=10, k=10, bias_weight=1.0):
         self._name = 'Roughly Optimized Multileave'
+        self._n_samples = n_samples
         self._k = k
         self._bias_weight = bias_weight
         self.needs_inverted = True
@@ -90,6 +91,7 @@ class RoughlyOptimizedMultileave(OptimizedMultileave):
         C = []
         for ml in self._allowed_leavings:
             C.append(1./(inverted_rankings[:,ml].T+1))
+        C = np.array(C)
 
         probs = self._solve(C)[0]
         probs[probs < 0] = 0
