@@ -7,6 +7,8 @@ import time
 import numpy as np
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import utils.clicks as clicks
+from itertools import combinations
+from random import sample
 from utils.folddata import get_fold_data
 from utils.rankings import get_score_rankings, get_candidate_score_ranking, rank_candidate_queries
 from utils.evaluate import get_idcg_list, evaluate, evaluate_ranking
@@ -53,12 +55,10 @@ class SingleMultileaveSimulation(object):
         n_mul_feat = len(mul_feat)
         self.weights = np.zeros((self.n_rankers, self.feature_count))
         if self.combine_features:
-            assert self.n_rankers <= n_mul_feat ** 2
-            for i, j in enumerate(np.random.permutation(n_mul_feat ** 2)[:self.n_rankers]):
-                k, l = divmod(j, n_mul_feat)
-                sel0, sel1 = mul_feat[k], mul_feat[l]
-                self.weights[i, sel0] += 1.
-                self.weights[i, sel1] += 1.
+            assert self.n_rankers <= len(mul_feat) * (len(mul_feat) - 1) / 2
+            pairs = sorted(combinations(mul_feat, 2))
+            for i, pair in enumerate(sample(pairs, self.n_rankers)):
+                self.weights[i, pair] = 1.
         else:
             assert self.n_rankers <= n_mul_feat
             selection = mul_feat[np.random.permutation(n_mul_feat)[:self.n_rankers]]
