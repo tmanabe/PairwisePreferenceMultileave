@@ -48,6 +48,7 @@ class ClickModel(object):
 
 # create synonyms for keywords to ease command line use
 syn_tuples = [
+    ('openliveq', ['olq']),
     ('navigational', ['nav', 'navi', 'navig', 'navigat']),
     ('informational', ['inf', 'info', 'infor', 'informat']),
     ('perfect', ['per', 'perf']),
@@ -73,6 +74,7 @@ for full, abrv_list in syn_tuples:
         synonyms[abrv] = full
 
 bin_models = {}
+bin_models['openliveq'] = np.array([0.01408, 0.13295]), np.array([0.0, 0.29564])
 bin_models['navigational'] = np.array([.05, .95]), np.array([.2, .9])
 bin_models['informational'] = np.array([.4, .9]), np.array([.1, .5])
 bin_models['perfect'] = np.array([.0, 1.]), np.array([.0, .0])
@@ -80,6 +82,7 @@ bin_models['almost_random'] = np.array([.4, .6]), np.array([.5, .5])
 bin_models['random'] = np.array([.5, .5]), np.array([.0, .0])
 
 short_models = {}
+short_models['openliveq'] = np.array([0.01408, 0.08298, 0.23313]), np.array([0.0, 0.18068, 0.45304])
 short_models['navigational'] = np.array([.05, .5, .95]), np.array([.2, .5, .9])
 short_models['informational'] = np.array([.4, .7, .9]), np.array([.1, .3, .5])
 short_models['perfect'] = np.array([.0, .5, 1.]), np.array([.0, .0, .0])
@@ -87,6 +90,7 @@ short_models['almost_random'] = np.array([.4, .5, .6]), np.array([.5, .5, .5])
 short_models['random'] = np.array([.5, .5, .5]), np.array([.0, .0, .0])
 
 long_models = {}
+long_models['openliveq'] = np.array([0.01408, 0.08298, 0.18536, 0.3626, 0.73394]), np.array([0.0, 0.18068, 0.38584, 0.60691, 0.69991])
 long_models['navigational'] = np.array([.05, .3, .5, .7, .95]), np.array([.2, .3, .5, .7, .9])
 long_models['informational'] = np.array([.4, .6, .7, .8, .9]), np.array([.1, .2, .3, .4, .5])
 long_models['perfect'] = np.array([.0, .2, .4, .8, 1.]), np.array([.0, .0, .0, .0, .0])
